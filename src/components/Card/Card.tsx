@@ -2,6 +2,7 @@ import "./Card.css";
 
 interface CardInterface {
   card: number;
+  hide: boolean;
 }
 
 function Card(props: CardInterface) {
@@ -35,8 +36,10 @@ function Card(props: CardInterface) {
 
   return (
     <div className="Card">
-      <h1 className="Value">{getValue(props.card)}</h1>
-      <img className="Suite" src={getSuite(props.card)} alt="" />
+      {!props.hide && <h1 className="Value">{getValue(props.card)}</h1>}
+      {!props.hide && (
+        <img className="Suite" src={getSuite(props.card)} alt="" />
+      )}
     </div>
   );
 }

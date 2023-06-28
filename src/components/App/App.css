@@ -9,3 +9,24 @@
   background: rgb(50, 50, 50);
 }
 
+.Controls {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.Player {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+
+  position: relative;
+  border-top: 1px solid white;
+}
+
+.Selected {
+  width: 2rem;
+  position: absolute;
+  left: 0;
+}
+

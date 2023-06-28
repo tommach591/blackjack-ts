@@ -1,0 +1,24 @@
+.Button {
+  width: 5rem;
+  height: 2rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  text-align: center;
+  border-radius: 3px;
+  margin: 0.5rem;
+
+  border: 1px solid black;
+  background: white;
+
+  -moz-user-select: none;
+  -khtml-user-select: none;
+  -webkit-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+}
+
+.Button:hover {
+  cursor: pointer;
+}
