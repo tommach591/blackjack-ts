@@ -4,6 +4,7 @@ interface ButtonInterface {
   name: string;
   active: boolean;
   handleOnClick: any;
+  params: any;
 }
 
 function Button(props: ButtonInterface) {
@@ -11,7 +12,7 @@ function Button(props: ButtonInterface) {
     <div
       className="Button"
       onClick={() => {
-        if (props.active) props.handleOnClick();
+        if (props.active) props.handleOnClick(props.params);
       }}
       style={props.active ? { background: "white" } : { background: "gray" }}
     >

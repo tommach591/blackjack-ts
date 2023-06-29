@@ -9,6 +9,37 @@
   background: rgb(50, 50, 50);
 }
 
+.Account {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+
+  position: absolute;
+  left: 0;
+}
+
+.Balance {
+  display: flex;
+  align-items: center;
+  margin: 0.5rem;
+}
+
+.Balance > img {
+  width: 2rem;
+  margin-right: 0.5rem;
+}
+
+.Balance > h1 {
+  font-size: 20px;
+  color: white;
+}
+
+.Bet {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
 .Controls {
   display: flex;
   align-items: center;
