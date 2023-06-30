@@ -1,6 +1,6 @@
 .Button {
-  width: 5rem;
-  height: 2rem;
+  width: 4rem;
+  height: 1.5rem;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -8,6 +8,8 @@
   text-align: center;
   border-radius: 3px;
   margin: 0.5rem;
+
+  font-size: 13px;
 
   border: 1px solid black;
   background: white;

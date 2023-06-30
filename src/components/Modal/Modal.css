@@ -1,0 +1,36 @@
+.Modal {
+  width: 100%;
+  height: 100%;
+
+  display: flex;
+  justify-content: center;
+
+  position: absolute;
+  z-index: 2;
+
+  background: rgba(0, 0, 0, 0.5);
+}
+
+.Inner {
+  width: 60%;
+  max-width: 20rem;
+  height: 20%;
+  max-height: 10rem;
+
+  background: white;
+  border-radius: 5px;
+
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+
+  position: absolute;
+  top: 5rem;
+
+  box-shadow: -3px 3px 3px 1px black;
+}
+
+.Inner > h1 {
+  margin: 0.5rem;
+}

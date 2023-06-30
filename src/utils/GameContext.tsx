@@ -14,11 +14,34 @@ interface GameInterface {
   selected: number;
   bet: number;
   done: boolean;
+  paid: boolean;
 }
 
 export const GameContext = createContext<GameInterface>(null!);
 export function useGame() {
   return useContext(GameContext);
+}
+
+interface AccountInterface {
+  balance: number;
+  bet: number;
+  lastCoin: string;
+}
+
+export const AccountContext = createContext<AccountInterface>(null!);
+export function useAccount() {
+  return useContext(AccountContext);
+}
+
+interface ModalInterface {
+  payout: number;
+  bet: number;
+  modalOn: boolean;
+}
+
+export const ModalContext = createContext<ModalInterface>(null!);
+export function useModal() {
+  return useContext(ModalContext);
 }
 
 interface CommandInterface {
@@ -28,21 +51,12 @@ interface CommandInterface {
   double: any;
   setup: any;
   updateAccount: any;
+  setModal: any;
 }
 
 export const CommandContext = createContext<CommandInterface>(null!);
 export function useCommand() {
   return useContext(CommandContext);
-}
-
-interface AccountInterface {
-  balance: number;
-  bet: number;
-}
-
-export const AccountContext = createContext<AccountInterface>(null!);
-export function useAccount() {
-  return useContext(AccountContext);
 }
 
 export function GameProvider({ children }: { children: JSX.Element }) {
@@ -72,16 +86,29 @@ export function GameProvider({ children }: { children: JSX.Element }) {
     selected: 0,
     bet: 0,
     done: true,
+    paid: false,
   });
 
+  // localStorage.clear();
   const [account, setAccount] = useState<AccountInterface>(
     JSON.parse(
       localStorage.getItem("account") ||
-        JSON.stringify({ balance: 100, bet: 1 })
+        JSON.stringify({
+          balance: 100,
+          bet: 1,
+          lastCoin: new Date().toISOString(),
+        })
     )
   );
 
-  const updateAccount = useCallback((newAccount: AccountInterface) => {
+  const [modal, setModal] = useState<ModalInterface>({
+    payout: 0,
+    bet: 0,
+    modalOn: false,
+  });
+
+  const updateAccount = useCallback((acc: AccountInterface) => {
+    const newAccount = JSON.parse(JSON.stringify(acc));
     setAccount(newAccount);
     localStorage.setItem("account", JSON.stringify(newAccount));
   }, []);
@@ -127,6 +154,7 @@ export function GameProvider({ children }: { children: JSX.Element }) {
         selected: 0,
         bet: bet,
         done: countHand(playerHand) === 21,
+        paid: false,
       });
 
       const newAccount = JSON.parse(JSON.stringify(account));
@@ -191,17 +219,18 @@ export function GameProvider({ children }: { children: JSX.Element }) {
 
         if (blackjack) {
           payout += Math.round(newGame.bet * 2.5);
-        } else if (higherValue || dealerBust || fiveCards)
+        } else if (higherValue || dealerBust || fiveCards) {
           payout += newGame.bet * 2;
-        else if (push) payout += newGame.bet;
+        } else if (push) payout += newGame.bet;
       });
 
-      if (payout > 0) {
+      if (!newGame.paid) {
         const newAccount = JSON.parse(JSON.stringify(account));
         newAccount.balance += payout;
         updateAccount(newAccount);
+        setModal({ payout: payout, bet: newGame.bet, modalOn: true });
 
-        newGame.bet = 0;
+        newGame.paid = true;
         setGame(newGame);
       }
     }
@@ -251,14 +280,47 @@ export function GameProvider({ children }: { children: JSX.Element }) {
     checkGame();
   }, [checkGame]);
 
+  useEffect(() => {
+    const currentTime = new Date();
+    const lastCoin = new Date(account.lastCoin);
+    const timeDiff = currentTime.getTime() - lastCoin.getTime();
+    const cooldown = 6 * 60 * 1000;
+    const updateTimer = 1000;
+    const coins = 1;
+
+    const timeout = setTimeout(() => {
+      const newAccount = JSON.parse(JSON.stringify(account));
+      newAccount.balance += Math.floor(timeDiff / cooldown) * coins;
+      newAccount.lastCoin = new Date(
+        currentTime.getTime() - (timeDiff % cooldown)
+      ).toISOString();
+
+      setAccount(newAccount);
+    }, updateTimer - timeDiff);
+
+    return () => {
+      clearTimeout(timeout);
+    };
+  }, [game, account]);
+
   return (
     <GameContext.Provider value={game}>
       <AccountContext.Provider value={account}>
-        <CommandContext.Provider
-          value={{ hit, stand, split, double, setup, updateAccount }}
-        >
-          {children}
-        </CommandContext.Provider>
+        <ModalContext.Provider value={modal}>
+          <CommandContext.Provider
+            value={{
+              hit,
+              stand,
+              split,
+              double,
+              setup,
+              updateAccount,
+              setModal,
+            }}
+          >
+            {children}
+          </CommandContext.Provider>
+        </ModalContext.Provider>
       </AccountContext.Provider>
     </GameContext.Provider>
   );
