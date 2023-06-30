@@ -49,6 +49,7 @@ interface CommandInterface {
   stand: any;
   split: any;
   double: any;
+  countHand: any;
   setup: any;
   updateAccount: any;
   setModal: any;
@@ -143,7 +144,14 @@ export function GameProvider({ children }: { children: JSX.Element }) {
 
   const setup = useCallback(
     (bet: number) => {
-      const newDeck = shuffleDeck([...standardDeck]);
+      const newDeck = shuffleDeck([
+        ...standardDeck,
+        ...standardDeck,
+        ...standardDeck,
+        ...standardDeck,
+        ...standardDeck,
+        ...standardDeck,
+      ]);
       const dealerHand = [newDeck.shift()!, newDeck.shift()!];
       const playerHand = [newDeck.shift()!, newDeck.shift()!];
 
@@ -313,6 +321,7 @@ export function GameProvider({ children }: { children: JSX.Element }) {
               stand,
               split,
               double,
+              countHand,
               setup,
               updateAccount,
               setModal,

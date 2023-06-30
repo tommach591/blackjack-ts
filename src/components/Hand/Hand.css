@@ -7,3 +7,11 @@
   position: relative;
 }
 
+.Count {
+  color: white;
+  position: absolute;
+  text-align: center;
+  right: 1rem;
+  top: 50%;
+}
+

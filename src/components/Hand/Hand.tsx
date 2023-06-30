@@ -1,4 +1,4 @@
-import { useGame } from "../../utils/GameContext";
+import { useCommand, useGame } from "../../utils/GameContext";
 import Card from "../Card";
 import "./Hand.css";
 
@@ -9,6 +9,7 @@ interface HandInterface {
 
 function Hand(props: HandInterface) {
   const game = useGame();
+  const command = useCommand();
 
   return (
     <div className="Hand">
@@ -19,6 +20,11 @@ function Hand(props: HandInterface) {
           hide={props.isDealer ? i === 0 && !game.done : false}
         />
       ))}
+      <h1 className="Count">
+        {props.isDealer && !game.done
+          ? command.countHand(props.hand.slice(1))
+          : command.countHand(props.hand)}
+      </h1>
     </div>
   );
 }
